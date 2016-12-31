@@ -47,6 +47,32 @@ class GroupsController < ApplicationController
 
   end
 
+  def join
+    @group = Group.find(params[:id])
+
+    if !current_user.is_member_of?(@group)
+      current_user.join!(@group)
+      flash[:notice] = "Join this Discussion Succeed"
+    else
+      flash[:warning] = "You've already the member of Discussion"
+    end
+
+    redirect_to group_path(@group)
+  end
+
+  def quit
+    @group = Group.find(params[:id])
+
+    if current_user.is_member_of?(@group)
+      current_user.quit!(@group)
+      flash[:alert] = "Quit this Discussion"
+    else
+      flash[:warning] = "You are not the member of Discussion"
+    end
+
+    redirect_to group_path(@group)
+  end
+
   private
   def find_group_and_check_permission
     @group = Group.find(params[:id])
